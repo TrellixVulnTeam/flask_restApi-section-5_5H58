@@ -1,9 +1,12 @@
 from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
+from passlib.hash import pbkdf2_sha256
+from flask_jwt_extended import JWTManager
+
 
 from security import authenticate, identity
-from resources.user import UserRegister
+from resources.user import UserRegister ,UserLogin
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
 
@@ -13,6 +16,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = 'jose'
 api = Api(app)
+jwt = JWTManager(app)
 
 
 @app.before_first_request
@@ -26,6 +30,7 @@ api.add_resource(Store, '/store/<string:name>')
 api.add_resource(StoreList, '/stores')
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(ItemList, '/items')
+api.add_resource(UserLogin, '/login')
 api.add_resource(UserRegister, '/register')
 
 if __name__ == '__main__':
